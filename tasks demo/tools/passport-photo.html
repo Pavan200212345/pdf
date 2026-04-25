@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passport Photo Tool - Resize & Add White Background for Govt Forms</title>
+    <meta name="description" content="Create passport size photos for Indian government forms. Resize to 3.5x4.5cm, add white background, include name and date. Free tool for SSC, UPSC, Banking applications.">
+    <meta name="keywords" content="passport photo resize, passport size photo maker, 3.5x4.5 photo, white background photo, govt exam photo, ssc photo size, upsc passport photo">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-x-hidden">
+    <!-- Floating Background Blobs -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="relative z-10 py-4 px-6">
+        <nav class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                📄 DocUtility Hub
+            </a>
+            <a href="../index.html" class="hover:text-cyan-400 transition-colors">← Back to Tools</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 py-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-bold text-center mb-4">
+                <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                    Passport Photo Tool
+                </span>
+            </h1>
+            <p class="text-gray-400 text-center mb-8">Create perfect passport photos with white background for government forms</p>
+
+            <!-- Tool Card -->
+            <div class="glass-card rounded-2xl p-8">
+                <!-- Drop Zone -->
+                <div id="dropZone" class="drop-zone rounded-xl p-12 text-center cursor-pointer mb-6">
+                    <div class="text-5xl mb-4">📸</div>
+                    <p class="text-lg mb-2">Drag & drop your photo here</p>
+                    <p class="text-gray-400">or click to browse</p>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                </div>
+
+                <!-- Editor Section -->
+                <div id="editorSection" class="hidden">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Preview -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3">Preview</h3>
+                            <div class="bg-white rounded-lg p-4 flex justify-center">
+                                <canvas id="previewCanvas" class="max-w-full"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Options -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3">Photo Size</h3>
+                            <div class="space-y-3 mb-6">
+                                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                                    <input type="radio" name="photoSize" value="35x45" checked class="accent-purple-500">
+                                    <span>3.5 x 4.5 cm (Standard Passport)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                                    <input type="radio" name="photoSize" value="35x35" class="accent-purple-500">
+                                    <span>3.5 x 3.5 cm (Square)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                                    <input type="radio" name="photoSize" value="25x35" class="accent-purple-500">
+                                    <span>2.5 x 3.5 cm (Stamp Size)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                                    <input type="radio" name="photoSize" value="51x51" class="accent-purple-500">
+                                    <span>5.1 x 5.1 cm (US Visa)</span>
+                                </label>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">Background</h3>
+                            <div class="flex gap-3 mb-6">
+                                <button class="bg-btn flex-1 py-3 rounded-lg border-2 border-purple-500 bg-white" data-bg="white">White</button>
+                                <button class="bg-btn flex-1 py-3 rounded-lg border-2 border-transparent bg-blue-200 text-gray-800" data-bg="lightblue">Light Blue</button>
+                                <button class="bg-btn flex-1 py-3 rounded-lg border-2 border-transparent bg-gray-200 text-gray-800" data-bg="gray">Gray</button>
+                            </div>
+
+                            <h3 class="text-lg font-semibold mb-3">Add Text (Optional)</h3>
+                            <div class="space-y-3 mb-6">
+                                <input type="text" id="nameInput" placeholder="Enter Name" class="w-full">
+                                <input type="text" id="dateInput" placeholder="Enter Date (e.g., 15-01-2024)" class="w-full">
+                            </div>
+
+                            <button id="generateBtn" class="btn-primary ripple-btn w-full mb-3">
+                                🖼️ Generate Photo
+                            </button>
+                            <button id="downloadBtn" class="btn-secondary w-full hidden">
+                                📥 Download Photo
+                            </button>
+                            <button id="resetBtn" class="btn-secondary w-full mt-3">
+                                🔄 Upload New Photo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="glass-card rounded-2xl p-8 mt-8">
+                <h2 class="text-xl font-bold mb-4">How to Create Passport Size Photos</h2>
+                <div class="space-y-4 text-gray-300">
+                    <p>This passport photo tool helps you create perfectly sized photos for Indian government applications. Whether you need photos for SSC, UPSC, Banking exams, Aadhaar card, PAN card, or passport applications, our tool ensures your photo meets all requirements.</p>
+                    <p>The standard passport photo size in India is 3.5 x 4.5 cm with a white background. Our tool automatically adjusts your photo to this size while maintaining proper proportions. You can also choose other common sizes like square format for certain applications.</p>
+                    <p>For government forms, a plain white or light-colored background is typically required. Our tool adds a clean white background to your photo, making it suitable for official document submissions.</p>
+                    <p>You can optionally add your name and date to the photo, which is required for some examination forms. The text is added at the bottom of the photo in a clear, readable format.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 py-8 px-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto text-center text-gray-400">
+            <p>© 2024 Govt Document Utility Hub. Free passport photo tool for government forms.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let uploadedImage = null;
+        let selectedSize = '35x45';
+        let selectedBg = 'white';
+        
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const editorSection = document.getElementById('editorSection');
+        const previewCanvas = document.getElementById('previewCanvas');
+        const ctx = previewCanvas.getContext('2d');
+        const nameInput = document.getElementById('nameInput');
+        const dateInput = document.getElementById('dateInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Size configurations (in pixels at 300 DPI)
+        const sizes = {
+            '35x45': { width: 413, height: 531 },  // 3.5 x 4.5 cm
+            '35x35': { width: 413, height: 413 },  // 3.5 x 3.5 cm
+            '25x35': { width: 295, height: 413 },  // 2.5 x 3.5 cm
+            '51x51': { width: 600, height: 600 }   // 5.1 x 5.1 cm
+        };
+
+        const bgColors = {
+            'white': '#FFFFFF',
+            'lightblue': '#E3F2FD',
+            'gray': '#F5F5F5'
+        };
+
+        setupDropZone(dropZone, fileInput, handleFileSelect);
+
+        function handleFileSelect(files) {
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                uploadedImage = new Image();
+                uploadedImage.onload = () => {
+                    dropZone.classList.add('hidden');
+                    editorSection.classList.remove('hidden');
+                    generatePhoto();
+                };
+                uploadedImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Size selection
+        document.querySelectorAll('input[name="photoSize"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                selectedSize = e.target.value;
+                generatePhoto();
+            });
+        });
+
+        // Background selection
+        document.querySelectorAll('.bg-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('border-purple-500'));
+                btn.classList.add('border-purple-500');
+                selectedBg = btn.dataset.bg;
+                generatePhoto();
+            });
+        });
+
+        // Text inputs
+        nameInput.addEventListener('input', generatePhoto);
+        dateInput.addEventListener('input', generatePhoto);
+
+        function generatePhoto() {
+            if (!uploadedImage) return;
+
+            const size = sizes[selectedSize];
+            previewCanvas.width = size.width;
+            previewCanvas.height = size.height;
+
+            // Fill background
+            ctx.fillStyle = bgColors[selectedBg];
+            ctx.fillRect(0, 0, size.width, size.height);
+
+            // Calculate image dimensions to fit
+            const imgRatio = uploadedImage.width / uploadedImage.height;
+            const canvasRatio = size.width / size.height;
+            
+            let drawWidth, drawHeight, drawX, drawY;
+            
+            if (imgRatio > canvasRatio) {
+                drawHeight = size.height * 0.85;
+                drawWidth = drawHeight * imgRatio;
+                drawX = (size.width - drawWidth) / 2;
+                drawY = size.height * 0.05;
+            } else {
+                drawWidth = size.width * 0.85;
+                drawHeight = drawWidth / imgRatio;
+                drawX = size.width * 0.075;
+                drawY = (size.height * 0.85 - drawHeight) / 2 + size.height * 0.05;
+            }
+
+            ctx.drawImage(uploadedImage, drawX, drawY, drawWidth, drawHeight);
+
+            // Add text if provided
+            const name = nameInput.value.trim();
+            const date = dateInput.value.trim();
+            
+            if (name || date) {
+                ctx.fillStyle = '#000000';
+                ctx.font = 'bold 24px Arial';
+                ctx.textAlign = 'center';
+                
+                let textY = size.height - 40;
+                
+                if (date) {
+                    ctx.fillText(date, size.width / 2, textY);
+                    textY -= 30;
+                }
+                if (name) {
+                    ctx.fillText(name, size.width / 2, textY);
+                }
+            }
+
+            downloadBtn.classList.remove('hidden');
+        }
+
+        generateBtn.addEventListener('click', generatePhoto);
+
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = `passport_photo_${selectedSize.replace('x', '_')}.jpg`;
+            link.href = previewCanvas.toDataURL('image/jpeg', 0.95);
+            link.click();
+            showToast('Photo downloaded!');
+        });
+
+        resetBtn.addEventListener('click', () => {
+            uploadedImage = null;
+            fileInput.value = '';
+            nameInput.value = '';
+            dateInput.value = '';
+            editorSection.classList.add('hidden');
+            dropZone.classList.remove('hidden');
+            downloadBtn.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

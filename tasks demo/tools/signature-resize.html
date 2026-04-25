@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Resize Tool - Compress Signature to 10KB-20KB</title>
+    <meta name="description" content="Resize and compress signature images to 10KB-20KB for government form uploads. Maintain clarity while meeting SSC, UPSC, Banking exam signature requirements.">
+    <meta name="keywords" content="signature resize, compress signature, signature 10kb, signature 20kb, ssc signature size, upsc signature upload, banking exam signature">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-x-hidden">
+    <!-- Floating Background Blobs -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="relative z-10 py-4 px-6">
+        <nav class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                📄 DocUtility Hub
+            </a>
+            <a href="../index.html" class="hover:text-cyan-400 transition-colors">← Back to Tools</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 py-12 px-6">
+        <div class="max-w-3xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-bold text-center mb-4">
+                <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                    Signature Resize Tool
+                </span>
+            </h1>
+            <p class="text-gray-400 text-center mb-8">Compress your signature to 10KB-20KB while maintaining clarity</p>
+
+            <!-- Tool Card -->
+            <div class="glass-card rounded-2xl p-8">
+                <!-- Drop Zone -->
+                <div id="dropZone" class="drop-zone rounded-xl p-12 text-center cursor-pointer mb-6">
+                    <div class="text-5xl mb-4">✍️</div>
+                    <p class="text-lg mb-2">Drag & drop your signature image here</p>
+                    <p class="text-gray-400">or click to browse</p>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                </div>
+
+                <!-- Preview -->
+                <div id="previewSection" class="hidden mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Original Signature</h3>
+                    <div class="bg-white rounded-lg p-4 mb-4">
+                        <img id="previewImage" class="max-w-full max-h-48 mx-auto">
+                    </div>
+                    <div class="file-preview">
+                        <div class="flex-1">
+                            <p id="fileName" class="font-medium"></p>
+                            <p id="originalSize" class="text-gray-400 text-sm"></p>
+                        </div>
+                        <button id="removeFile" class="text-red-400 hover:text-red-300">✕</button>
+                    </div>
+                </div>
+
+                <!-- Target Size Selection -->
+                <div id="optionsSection" class="hidden mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Target Size</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                        <button class="size-btn btn-secondary" data-size="10">10 KB</button>
+                        <button class="size-btn btn-secondary bg-purple-600" data-size="15">15 KB</button>
+                        <button class="size-btn btn-secondary" data-size="20">20 KB</button>
+                        <button class="size-btn btn-secondary" data-size="custom">Custom</button>
+                    </div>
+                    <div id="customSizeInput" class="hidden">
+                        <input type="number" id="customSize" placeholder="Enter size in KB (4-50)" min="4" max="50">
+                    </div>
+
+                    <h3 class="text-lg font-semibold mb-3 mt-6">Dimensions (Optional)</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-sm text-gray-400">Width (px)</label>
+                            <input type="number" id="targetWidth" placeholder="e.g., 140" min="50" max="500">
+                        </div>
+                        <div>
+                            <label class="text-sm text-gray-400">Height (px)</label>
+                            <input type="number" id="targetHeight" placeholder="e.g., 60" min="20" max="200">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resize Button -->
+                <button id="resizeBtn" class="btn-primary ripple-btn w-full hidden">
+                    ✍️ Resize Signature
+                </button>
+
+                <!-- Progress -->
+                <div id="progressSection" class="hidden mt-6">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span>Processing...</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div id="resultSection" class="hidden mt-6 p-6 bg-green-500/10 rounded-xl border border-green-500/30">
+                    <h3 class="text-lg font-semibold text-green-400 mb-3">✅ Signature Resized!</h3>
+                    <div class="bg-white rounded-lg p-4 mb-4">
+                        <img id="resultImage" class="max-w-full max-h-32 mx-auto">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-gray-400 text-sm">Original Size</p>
+                            <p id="resultOriginal" class="font-semibold"></p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-sm">New Size</p>
+                            <p id="resultCompressed" class="font-semibold text-green-400"></p>
+                        </div>
+                    </div>
+                    <button id="downloadBtn" class="btn-primary w-full">
+                        📥 Download Signature
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="glass-card rounded-2xl p-8 mt-8">
+                <h2 class="text-xl font-bold mb-4">How to Resize Signature for Government Forms</h2>
+                <div class="space-y-4 text-gray-300">
+                    <p>This signature resize tool helps you compress signature images to exact KB sizes required by government job applications. Most SSC, UPSC, and Banking exam forms require signatures between 10KB to 20KB.</p>
+                    <p>Upload your signature image and select the target size. Our tool uses intelligent compression to reduce file size while maintaining signature clarity and readability.</p>
+                    <p>You can also specify exact pixel dimensions if the form requires specific width and height. Common requirements include 140×60 pixels for many government forms.</p>
+                    <p>For best results, use a signature on white background with good contrast. Signatures with thin strokes may lose some clarity at very small file sizes.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 py-8 px-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto text-center text-gray-400">
+            <p>© 2024 Govt Document Utility Hub. Signature resize tool for government forms.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let selectedFile = null;
+        let targetSizeKB = 15;
+        let compressedBlob = null;
+
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const previewSection = document.getElementById('previewSection');
+        const previewImage = document.getElementById('previewImage');
+        const fileName = document.getElementById('fileName');
+        const originalSize = document.getElementById('originalSize');
+        const removeFile = document.getElementById('removeFile');
+        const optionsSection = document.getElementById('optionsSection');
+        const customSizeInput = document.getElementById('customSizeInput');
+        const customSize = document.getElementById('customSize');
+        const targetWidth = document.getElementById('targetWidth');
+        const targetHeight = document.getElementById('targetHeight');
+        const resizeBtn = document.getElementById('resizeBtn');
+        const progressSection = document.getElementById('progressSection');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const resultSection = document.getElementById('resultSection');
+        const resultImage = document.getElementById('resultImage');
+        const resultOriginal = document.getElementById('resultOriginal');
+        const resultCompressed = document.getElementById('resultCompressed');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const sizeBtns = document.querySelectorAll('.size-btn');
+
+        setupDropZone(dropZone, fileInput, handleFileSelect);
+
+        function handleFileSelect(files) {
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+
+            selectedFile = file;
+            previewImage.src = URL.createObjectURL(file);
+            fileName.textContent = file.name;
+            originalSize.textContent = formatFileSize(file.size);
+
+            previewSection.classList.remove('hidden');
+            optionsSection.classList.remove('hidden');
+            resizeBtn.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+            dropZone.classList.add('hidden');
+        }
+
+        removeFile.addEventListener('click', () => {
+            selectedFile = null;
+            fileInput.value = '';
+            previewSection.classList.add('hidden');
+            optionsSection.classList.add('hidden');
+            resizeBtn.classList.add('hidden');
+            resultSection.classList.add('hidden');
+            dropZone.classList.remove('hidden');
+        });
+
+        sizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                sizeBtns.forEach(b => b.classList.remove('bg-purple-600'));
+                btn.classList.add('bg-purple-600');
+
+                const size = btn.dataset.size;
+                if (size === 'custom') {
+                    customSizeInput.classList.remove('hidden');
+                } else {
+                    customSizeInput.classList.add('hidden');
+                    targetSizeKB = parseInt(size);
+                }
+            });
+        });
+
+        customSize.addEventListener('input', () => {
+            const value = parseInt(customSize.value);
+            if (value >= 4 && value <= 50) {
+                targetSizeKB = value;
+            }
+        });
+
+        resizeBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            resizeBtn.disabled = true;
+            progressSection.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+
+            try {
+                const width = parseInt(targetWidth.value) || null;
+                const height = parseInt(targetHeight.value) || null;
+
+                compressedBlob = await resizeSignature(selectedFile, targetSizeKB, width, height);
+
+                resultImage.src = URL.createObjectURL(compressedBlob);
+                resultOriginal.textContent = formatFileSize(selectedFile.size);
+                resultCompressed.textContent = formatFileSize(compressedBlob.size);
+                resultSection.classList.remove('hidden');
+                showToast('Signature resized successfully!');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                resizeBtn.disabled = false;
+                progressSection.classList.add('hidden');
+            }
+        });
+
+        async function resizeSignature(file, targetKB, width, height) {
+            const targetBytes = targetKB * 1024;
+            let quality = 0.9;
+            let result;
+            let iterations = 0;
+            const maxIterations = 15;
+
+            // Load image
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            await new Promise(resolve => img.onload = resolve);
+
+            // Calculate dimensions
+            let finalWidth = width || img.width;
+            let finalHeight = height || img.height;
+
+            // If only one dimension provided, maintain aspect ratio
+            if (width && !height) {
+                finalHeight = Math.round(img.height * (width / img.width));
+            } else if (height && !width) {
+                finalWidth = Math.round(img.width * (height / img.height));
+            }
+
+            // Cap dimensions for signatures
+            if (!width && !height) {
+                const maxDim = 300;
+                if (finalWidth > maxDim || finalHeight > maxDim) {
+                    const ratio = Math.min(maxDim / finalWidth, maxDim / finalHeight);
+                    finalWidth = Math.round(finalWidth * ratio);
+                    finalHeight = Math.round(finalHeight * ratio);
+                }
+            }
+
+            updateProgress(20);
+
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = finalWidth;
+            canvas.height = finalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, finalWidth, finalHeight);
+            ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
+
+            updateProgress(40);
+
+            // Iterative compression
+            result = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+
+            while (result.size > targetBytes && iterations < maxIterations) {
+                iterations++;
+                quality -= 0.05;
+                
+                if (quality < 0.1) {
+                    // Reduce dimensions
+                    finalWidth = Math.round(finalWidth * 0.9);
+                    finalHeight = Math.round(finalHeight * 0.9);
+                    canvas.width = finalWidth;
+                    canvas.height = finalHeight;
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, finalWidth, finalHeight);
+                    ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
+                    quality = 0.7;
+                }
+
+                result = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+                updateProgress(40 + (iterations / maxIterations) * 50);
+            }
+
+            updateProgress(100);
+            return result;
+        }
+
+        function updateProgress(percent) {
+            progressFill.style.width = percent + '%';
+            progressText.textContent = Math.round(percent) + '%';
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            if (compressedBlob) {
+                const baseName = selectedFile.name.replace(/\.[^/.]+$/, '');
+                downloadFile(compressedBlob, `${baseName}_signature.jpg`);
+                showToast('Download started!');
+            }
+        });
+    </script>
+</body>
+</html>
