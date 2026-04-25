@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://yourdomain.com/tools/compress-image.html">
+    <title>Compress Image to Exact KB - 20KB, 50KB, 100KB for SSC, UPSC, Banking Forms</title>
+    <meta property="og:title" content="Compress Image to 20KB Online Free">
+<meta property="og:description" content="Compress image to exact 20KB, 50KB or 100KB for SSC, UPSC and govt forms.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourdomain.com/tools/compress-image.html">
+    <meta name="description" content="Compress images to exact KB size - 20KB, 50KB, 100KB or custom. Perfect for SSC CGL, UPSC, IBPS PO, Banking exam photo uploads. Free online tool, no upload required.">
+    <meta name="keywords" content="compress image to 20kb, compress photo to 50kb, reduce image size to 100kb, ssc photo compression, upsc photo size reducer, banking exam photo compressor">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-x-hidden">
+    <!-- Floating Background Blobs -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="relative z-10 py-4 px-6">
+        <nav class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                📄 DocUtility Hub
+            </a>
+            <a href="../index.html" class="back-btn">
+  ← Back to Tools
+</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 py-12 px-6">
+        <div class="max-w-3xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-bold text-center mb-4">
+                <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                    Compress Image to Exact KB
+                </span>
+            </h1>
+            <p class="text-gray-400 text-center mb-8">Compress your images to exactly 20KB, 50KB, 100KB or any custom size</p>
+
+            <!-- Tool Card -->
+            <div class="glass-card rounded-2xl p-8">
+                <!-- Drop Zone -->
+                <div id="dropZone" class="drop-zone rounded-xl p-12 text-center cursor-pointer mb-6">
+                    <div class="text-5xl mb-4">📁</div>
+                    <p class="text-lg mb-2">Drag & drop your image here</p>
+                    <p class="text-gray-400">or click to browse</p>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                </div>
+
+                <!-- Preview -->
+                <div id="previewSection" class="hidden mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Selected Image</h3>
+                    <div class="file-preview">
+                        <img id="previewImage" src="" alt="Preview">
+                        <div class="flex-1">
+                            <p id="fileName" class="font-medium"></p>
+                            <p id="originalSize" class="text-gray-400 text-sm"></p>
+                        </div>
+                        <button id="removeFile" class="text-red-400 hover:text-red-300">✕</button>
+                    </div>
+                </div>
+
+                <!-- Target Size Selection -->
+                <div id="optionsSection" class="hidden mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Target Size</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                        <button class="size-btn btn-secondary" data-size="20">20 KB</button>
+                        <button class="size-btn btn-secondary" data-size="50">50 KB</button>
+                        <button class="size-btn btn-secondary" data-size="100">100 KB</button>
+                        <button class="size-btn btn-secondary" data-size="custom">Custom</button>
+                    </div>
+                    <div id="customSizeInput" class="hidden">
+                        <input type="number" id="customSize" placeholder="Enter size in KB" min="1" max="5000">
+                    </div>
+                </div>
+
+                <!-- Compress Button -->
+                <button id="compressBtn" class="btn-primary ripple-btn w-full hidden" disabled>
+                    🗜️ Compress Image
+                </button>
+
+                <!-- Progress -->
+                <div id="progressSection" class="hidden mt-6">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span>Compressing...</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div id="resultSection" class="hidden mt-6 p-6 bg-green-500/10 rounded-xl border border-green-500/30">
+                    <h3 class="text-lg font-semibold text-green-400 mb-3">✅ Compression Complete!</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-gray-400 text-sm">Original Size</p>
+                            <p id="resultOriginal" class="font-semibold"></p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-sm">Compressed Size</p>
+                            <p id="resultCompressed" class="font-semibold text-green-400"></p>
+                        </div>
+                    </div>
+                    <button id="downloadBtn" class="btn-primary w-full">
+                        📥 Download Compressed Image
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="glass-card rounded-2xl p-8 mt-8">
+                <h2 class="text-xl font-bold mb-4">How to Compress Image to Exact KB Size</h2>
+                <div class="space-y-4 text-gray-300">
+                    <p>This free online image compressor helps you reduce image file size to an exact KB value. Whether you need to compress a photo to 20KB for SSC form, 50KB for UPSC application, or 100KB for banking exam registration, our tool delivers precise results.</p>
+                    <p>Unlike other compressors that give approximate sizes, our tool uses an iterative compression algorithm. It adjusts the image quality step by step until the file reaches your exact target size. This ensures your photo meets the strict file size requirements of government job applications.</p>
+                    <p>The compression happens entirely in your browser. Your images are never uploaded to any server, ensuring complete privacy and faster processing. You can even use this tool offline once the page is loaded.</p>
+                    <p>Supported formats include JPG, JPEG, PNG, and WebP. For best results, start with a high-quality image. The tool will automatically optimize the quality while maintaining acceptable visual clarity for document submissions.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Ad Placeholder -->
+    <div class="relative z-10 max-w-3xl mx-auto px-6 my-8">
+        <div class="ad-placeholder glass-card p-4 text-center text-gray-400 border border-dashed border-gray-600 rounded-xl">
+            Advertisement Space
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="relative z-10 py-8 px-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto text-center text-gray-400">
+            <p>© 2026 Govt Document Utility Hub. Free image compression for government forms.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let selectedFile = null;
+        let targetSizeKB = null;
+        let compressedBlob = null;
+
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const previewSection = document.getElementById('previewSection');
+        const previewImage = document.getElementById('previewImage');
+        const fileName = document.getElementById('fileName');
+        const originalSize = document.getElementById('originalSize');
+        const removeFile = document.getElementById('removeFile');
+        const optionsSection = document.getElementById('optionsSection');
+        const customSizeInput = document.getElementById('customSizeInput');
+        const customSize = document.getElementById('customSize');
+        const compressBtn = document.getElementById('compressBtn');
+        const progressSection = document.getElementById('progressSection');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const resultSection = document.getElementById('resultSection');
+        const resultOriginal = document.getElementById('resultOriginal');
+        const resultCompressed = document.getElementById('resultCompressed');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const sizeBtns = document.querySelectorAll('.size-btn');
+
+        // Setup drop zone
+        setupDropZone(dropZone, fileInput, handleFileSelect);
+
+        function handleFileSelect(files) {
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+            
+            selectedFile = file;
+            previewImage.src = URL.createObjectURL(file);
+            fileName.textContent = file.name;
+            originalSize.textContent = formatFileSize(file.size);
+            
+            previewSection.classList.remove('hidden');
+            optionsSection.classList.remove('hidden');
+            compressBtn.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+            
+            dropZone.classList.add('hidden');
+        }
+
+        removeFile.addEventListener('click', () => {
+            selectedFile = null;
+            targetSizeKB = null;
+            fileInput.value = '';
+            previewSection.classList.add('hidden');
+            optionsSection.classList.add('hidden');
+            compressBtn.classList.add('hidden');
+            resultSection.classList.add('hidden');
+            dropZone.classList.remove('hidden');
+            sizeBtns.forEach(btn => btn.classList.remove('bg-purple-600'));
+            customSizeInput.classList.add('hidden');
+        });
+
+        sizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                sizeBtns.forEach(b => b.classList.remove('bg-purple-600'));
+                btn.classList.add('bg-purple-600');
+                
+                const size = btn.dataset.size;
+                if (size === 'custom') {
+                    customSizeInput.classList.remove('hidden');
+                    targetSizeKB = null;
+                    compressBtn.disabled = true;
+                } else {
+                    customSizeInput.classList.add('hidden');
+                    targetSizeKB = parseInt(size);
+                    compressBtn.disabled = false;
+                }
+            });
+        });
+
+        customSize.addEventListener('input', () => {
+            const value = parseInt(customSize.value);
+            if (value > 0) {
+                targetSizeKB = value;
+                compressBtn.disabled = false;
+            } else {
+                compressBtn.disabled = true;
+            }
+        });
+
+        compressBtn.addEventListener('click', async () => {
+            if (!selectedFile || !targetSizeKB) return;
+            
+            compressBtn.disabled = true;
+            progressSection.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+            
+            try {
+                compressedBlob = await compressToExactSize(selectedFile, targetSizeKB);
+                
+                resultOriginal.textContent = formatFileSize(selectedFile.size);
+                resultCompressed.textContent = formatFileSize(compressedBlob.size);
+                resultSection.classList.remove('hidden');
+                showToast('Image compressed to exact size!');
+            } catch (error) {
+                showToast('Compression failed: ' + error.message, 'error');
+            } finally {
+                compressBtn.disabled = false;
+                progressSection.classList.add('hidden');
+            }
+        });
+
+        // ============================================================
+        //  EXACT-SIZE COMPRESSION LOGIC
+        // ============================================================
+        //  Strategy:
+        //   1. Load image to canvas (cache it).
+        //   2. Binary search JPEG quality to get blob just UNDER target.
+        //   3. If still too big at quality 0.1 -> downscale and retry.
+        //   4. Pad the JPEG with a custom COM (0xFFFE) marker segment
+        //      to hit the EXACT target byte count.
+        // ============================================================
+
+        async function compressToExactSize(file, targetKB) {
+            const targetBytes = targetKB * 1024;
+
+            // Load image once
+            const img = await loadImage(file);
+            let width = img.naturalWidth || img.width;
+            let height = img.naturalHeight || img.height;
+
+            updateProgress(10);
+
+            let blob = null;
+            let scaleAttempts = 0;
+            const maxScaleAttempts = 6;
+
+            // Outer loop: try with current dimensions, downscale if needed
+            while (scaleAttempts < maxScaleAttempts) {
+                blob = await binarySearchQuality(img, width, height, targetBytes);
+
+                // If we got under target, we're good
+                if (blob && blob.size <= targetBytes) {
+                    break;
+                }
+
+                // Otherwise, downscale and try again
+                width = Math.floor(width * 0.8);
+                height = Math.floor(height * 0.8);
+                scaleAttempts++;
+                updateProgress(20 + scaleAttempts * 10);
+
+                if (width < 50 || height < 50) break;
+            }
+
+            updateProgress(85);
+
+            if (!blob) {
+                throw new Error('Could not compress to target size');
+            }
+
+            // Pad to EXACT target size using JPEG comment marker
+            const finalBlob = await padJpegToExactSize(blob, targetBytes);
+
+            updateProgress(100);
+            return finalBlob;
+        }
+
+        // Load file into an HTMLImageElement
+        function loadImage(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        // Binary search the JPEG quality value to find the largest blob
+        // that is still <= targetBytes
+        async function binarySearchQuality(img, width, height, targetBytes) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+
+            // White background (handles transparent PNGs)
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+
+            let lo = 0.05;
+            let hi = 0.98;
+            let bestBlob = null;
+
+            // Quick check: even at lowest quality, is it still too big?
+            const lowestBlob = await canvasToJpeg(canvas, lo);
+            if (lowestBlob.size > targetBytes) {
+                // Caller will need to downscale
+                return lowestBlob;
+            }
+
+            // Binary search for highest quality under target
+            for (let i = 0; i < 12; i++) {
+                const mid = (lo + hi) / 2;
+                const trial = await canvasToJpeg(canvas, mid);
+
+                if (trial.size <= targetBytes) {
+                    bestBlob = trial;
+                    lo = mid; // try higher quality
+                } else {
+                    hi = mid; // need lower quality
+                }
+                updateProgress(30 + i * 4);
+            }
+
+            return bestBlob || lowestBlob;
+        }
+
+        function canvasToJpeg(canvas, quality) {
+            return new Promise((resolve) => {
+                canvas.toBlob((b) => resolve(b), 'image/jpeg', quality);
+            });
+        }
+
+        // Pad a JPEG to exactly targetBytes by inserting a COM (0xFFFE) marker
+        // segment with arbitrary filler bytes. JPEG decoders ignore COM segments.
+        async function padJpegToExactSize(blob, targetBytes) {
+            const currentBytes = blob.size;
+
+            // If we're already exactly at target (rare), return as-is
+            if (currentBytes === targetBytes) return blob;
+
+            // If somehow over target, just return what we have
+            if (currentBytes > targetBytes) return blob;
+
+            const bytesToAdd = targetBytes - currentBytes;
+
+            // COM segment overhead = 4 bytes (FF FE + 2-byte length)
+            // Max payload per segment = 65533 bytes (length field is 2 bytes incl. itself)
+            // If bytesToAdd < 4, we can't add a valid segment -> return as-is
+            if (bytesToAdd < 4) return blob;
+
+            const arrayBuffer = await blob.arrayBuffer();
+            const original = new Uint8Array(arrayBuffer);
+
+            // Find insertion point: right after SOI marker (FF D8) at offset 0
+            // SOI is 2 bytes, so we insert at offset 2
+            const insertOffset = 2;
+
+            // Validate it's actually a JPEG
+            if (original[0] !== 0xFF || original[1] !== 0xD8) {
+                return blob; // not a JPEG, can't pad safely
+            }
+
+            // Build COM segments to fill bytesToAdd
+            const segments = buildComSegments(bytesToAdd);
+
+            // Stitch: SOI + COM segments + rest of original
+            const totalSize = original.length + segments.length;
+            const result = new Uint8Array(totalSize);
+
+            result.set(original.subarray(0, insertOffset), 0);
+            result.set(segments, insertOffset);
+            result.set(original.subarray(insertOffset), insertOffset + segments.length);
+
+            return new Blob([result], { type: 'image/jpeg' });
+        }
+
+        // Build one or more COM marker segments totaling exactly `totalBytes`
+        // Each segment: FF FE [len_hi] [len_lo] [payload...]
+        // where len = 2 + payload.length, max payload = 65533
+        function buildComSegments(totalBytes) {
+            const out = [];
+            let remaining = totalBytes;
+            const MAX_SEG = 65535;       // max total segment size including FF FE
+            const HEADER  = 4;           // FF FE + 2 length bytes
+            const MIN_SEG = 4;           // FF FE + length=2 + 0 payload bytes
+
+            while (remaining > 0) {
+                let segSize;
+
+                if (remaining <= MAX_SEG && remaining >= MIN_SEG) {
+                    segSize = remaining;
+                } else if (remaining > MAX_SEG) {
+                    // Leave at least MIN_SEG for the next segment
+                    segSize = (remaining - MAX_SEG >= MIN_SEG) ? MAX_SEG
+                                                                : MAX_SEG - MIN_SEG;
+                } else {
+                    // remaining < MIN_SEG (1, 2, or 3 bytes) — cannot represent
+                    // Break; final size will be off by at most 3 bytes.
+                    break;
+                }
+
+                const payloadLen = segSize - HEADER;
+                const lenField   = payloadLen + 2; // length field includes itself
+
+                out.push(0xFF, 0xFE);
+                out.push((lenField >> 8) & 0xFF, lenField & 0xFF);
+                for (let i = 0; i < payloadLen; i++) out.push(0x20); // space char
+
+                remaining -= segSize;
+            }
+
+            return new Uint8Array(out);
+        }
+
+        function updateProgress(percent) {
+            progressFill.style.width = percent + '%';
+            progressText.textContent = Math.round(percent) + '%';
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            if (compressedBlob) {
+                const baseName = selectedFile.name.replace(/\.[^/.]+$/, '');
+                downloadFile(compressedBlob, `${baseName}_${targetSizeKB}KB.jpg`);
+                showToast('Download started!');
+            }
+        });
+    </script>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Compress Image to 20KB",
+  "description": "Compress image to exact KB size for SSC, UPSC and govt forms"
+}
+</script>
+</body>
+</html>
