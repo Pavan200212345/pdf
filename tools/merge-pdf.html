@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge PDF Files - Combine Multiple PDFs into One</title>
+    <meta name="description" content="Merge multiple PDF files into a single document. Free online PDF merger tool. Perfect for combining application documents, certificates, and forms.">
+    <meta name="keywords" content="merge pdf, combine pdf, pdf merger, join pdf files, pdf combiner, merge documents online">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-x-hidden">
+    <!-- Floating Background Blobs -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="relative z-10 py-4 px-6">
+        <nav class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                📄 DocUtility Hub
+            </a>
+            <a href="../index.html" class="hover:text-cyan-400 transition-colors">← Back to Tools</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 py-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-bold text-center mb-4">
+                <span class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                    Merge PDF Files
+                </span>
+            </h1>
+            <p class="text-gray-400 text-center mb-8">Combine multiple PDF documents into one file</p>
+
+            <!-- Tool Card -->
+            <div class="glass-card rounded-2xl p-8">
+                <!-- Drop Zone -->
+                <div id="dropZone" class="drop-zone rounded-xl p-12 text-center cursor-pointer mb-6">
+                    <div class="text-5xl mb-4">📑</div>
+                    <p class="text-lg mb-2">Drag & drop PDF files here</p>
+                    <p class="text-gray-400">or click to browse (select multiple)</p>
+                    <input type="file" id="fileInput" accept=".pdf" multiple class="hidden">
+                </div>
+
+                <!-- PDF List -->
+                <div id="pdfList" class="space-y-3 mb-6 hidden">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold">Selected PDFs</h3>
+                        <button id="addMoreBtn" class="text-cyan-400 hover:text-cyan-300 text-sm">+ Add More</button>
+                    </div>
+                    <p class="text-gray-400 text-sm">Reorder PDFs using arrows</p>
+                    <div id="pdfItems" class="space-y-2"></div>
+                </div>
+
+                <!-- Merge Button -->
+                <button id="mergeBtn" class="btn-primary ripple-btn w-full hidden" disabled>
+                    📑 Merge PDFs
+                </button>
+
+                <!-- Progress -->
+                <div id="progressSection" class="hidden mt-6">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span>Merging PDFs...</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div id="resultSection" class="hidden mt-6 p-6 bg-green-500/10 rounded-xl border border-green-500/30">
+                    <h3 class="text-lg font-semibold text-green-400 mb-3">✅ PDFs Merged!</h3>
+                    <p id="resultInfo" class="text-gray-300 mb-4"></p>
+                    <button id="downloadBtn" class="btn-primary w-full">
+                        📥 Download Merged PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="glass-card rounded-2xl p-8 mt-8">
+                <h2 class="text-xl font-bold mb-4">How to Merge PDF Files</h2>
+                <div class="space-y-4 text-gray-300">
+                    <p>This free PDF merger tool allows you to combine multiple PDF documents into a single file. Perfect for compiling application documents, combining certificates, or creating document packages for submission.</p>
+                    <p>Simply drag and drop your PDF files or click to browse. You can select multiple PDFs at once. After selecting, use the arrow buttons to reorder the documents in your preferred sequence.</p>
+                    <p>The merged PDF maintains the original quality of all documents. Page sizes and orientations are preserved from the source files.</p>
+                    <p>All processing happens locally in your browser. Your documents are never uploaded to any server, ensuring complete privacy and security for sensitive documents.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 py-8 px-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto text-center text-gray-400">
+            <p>© 2024 Govt Document Utility Hub. Free PDF merger tool.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let pdfs = [];
+        let mergedPdfBlob = null;
+
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const pdfList = document.getElementById('pdfList');
+        const pdfItems = document.getElementById('pdfItems');
+        const addMoreBtn = document.getElementById('addMoreBtn');
+        const mergeBtn = document.getElementById('mergeBtn');
+        const progressSection = document.getElementById('progressSection');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const resultSection = document.getElementById('resultSection');
+        const resultInfo = document.getElementById('resultInfo');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        setupDropZone(dropZone, fileInput, handleFileSelect);
+
+        function handleFileSelect(files) {
+            const newPdfs = Array.from(files).filter(f => f.type === 'application/pdf' || f.name.endsWith('.pdf'));
+            if (newPdfs.length === 0) {
+                showToast('Please select PDF files', 'error');
+                return;
+            }
+
+            newPdfs.forEach(file => {
+                pdfs.push({
+                    file: file,
+                    name: file.name,
+                    size: file.size
+                });
+            });
+            
+            renderPdfList();
+        }
+
+        function renderPdfList() {
+            if (pdfs.length === 0) {
+                pdfList.classList.add('hidden');
+                mergeBtn.classList.add('hidden');
+                return;
+            }
+
+            pdfList.classList.remove('hidden');
+            mergeBtn.classList.remove('hidden');
+            mergeBtn.disabled = pdfs.length < 2;
+            resultSection.classList.add('hidden');
+
+            pdfItems.innerHTML = pdfs.map((pdf, index) => `
+                <div class="file-preview">
+                    <div class="w-12 h-12 bg-red-500/20 rounded flex items-center justify-center text-2xl">📄</div>
+                    <div class="flex-1">
+                        <p class="font-medium text-sm truncate">${pdf.name}</p>
+                        <p class="text-gray-400 text-xs">${formatFileSize(pdf.size)}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="move-up text-gray-400 hover:text-white" data-index="${index}" ${index === 0 ? 'disabled' : ''}>↑</button>
+                        <button class="move-down text-gray-400 hover:text-white" data-index="${index}" ${index === pdfs.length - 1 ? 'disabled' : ''}>↓</button>
+                        <button class="remove-pdf text-red-400 hover:text-red-300" data-index="${index}">✕</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add event listeners
+            document.querySelectorAll('.move-up').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.dataset.index);
+                    if (idx > 0) {
+                        [pdfs[idx], pdfs[idx - 1]] = [pdfs[idx - 1], pdfs[idx]];
+                        renderPdfList();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.move-down').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.dataset.index);
+                    if (idx < pdfs.length - 1) {
+                        [pdfs[idx], pdfs[idx + 1]] = [pdfs[idx + 1], pdfs[idx]];
+                        renderPdfList();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.remove-pdf').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.dataset.index);
+                    pdfs.splice(idx, 1);
+                    renderPdfList();
+                });
+            });
+        }
+
+        addMoreBtn.addEventListener('click', () => fileInput.click());
+
+        mergeBtn.addEventListener('click', async () => {
+            if (pdfs.length < 2) return;
+
+            mergeBtn.disabled = true;
+            progressSection.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+
+            try {
+                const { PDFDocument } = PDFLib;
+                const mergedPdf = await PDFDocument.create();
+                let totalPages = 0;
+
+                for (let i = 0; i < pdfs.length; i++) {
+                    const arrayBuffer = await pdfs[i].file.arrayBuffer();
+                    const pdf = await PDFDocument.load(arrayBuffer);
+                    const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                    pages.forEach(page => mergedPdf.addPage(page));
+                    totalPages += pages.length;
+                    updateProgress(((i + 1) / pdfs.length) * 100);
+                }
+
+                const mergedPdfBytes = await mergedPdf.save();
+                mergedPdfBlob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+
+                resultInfo.textContent = `${pdfs.length} PDFs merged (${totalPages} pages, ${formatFileSize(mergedPdfBlob.size)})`;
+                resultSection.classList.remove('hidden');
+                showToast('PDFs merged successfully!');
+            } catch (error) {
+                showToast('Error merging PDFs: ' + error.message, 'error');
+            } finally {
+                mergeBtn.disabled = false;
+                progressSection.classList.add('hidden');
+            }
+        });
+
+        function updateProgress(percent) {
+            progressFill.style.width = percent + '%';
+            progressText.textContent = Math.round(percent) + '%';
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            if (mergedPdfBlob) {
+                downloadFile(mergedPdfBlob, 'merged_document.pdf');
+                showToast('Download started!');
+            }
+        });
+    </script>
+</body>
+</html>
